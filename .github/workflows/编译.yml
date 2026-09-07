@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 jobs:
-  编译:
+  build:
     name: 编译 Windows 程序
     runs-on: windows-latest
     steps:
