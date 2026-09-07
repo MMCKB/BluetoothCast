@@ -14,7 +14,6 @@ on:
       version:
         description: '版本号，例如 1.0.0（将创建 v1.0.0 标签）'
         required: true
-        default: '1.0.0'
 
 permissions:
   contents: write
