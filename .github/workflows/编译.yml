@@ -1,0 +1,60 @@
+name: 编译与发布
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: '是否创建 GitHub Release（一个版本号对应一个 tag 与一个 Release）'
+        type: boolean
+        default: false
+      prerelease:
+        description: '该 Release 是否标记为预发布'
+        type: boolean
+        default: false
+      version:
+        description: '版本号，例如 1.0.0（将创建 v1.0.0 标签）'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  编译:
+    name: 编译 Windows 程序
+    runs-on: windows-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 还原依赖
+        run: dotnet restore
+
+      - name: 编译发布版本
+        run: dotnet build -c Release -p:Version=${{ inputs.version }}
+
+      - name: 打包发布文件
+        shell: pwsh
+        run: |
+          $zip = "投音通_BluetoothCast_v${{ inputs.version }}.zip"
+          Compress-Archive -Path "bin/Release/net8.0-windows10.0.22621.0/win-x64/*" -DestinationPath $zip
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: 投音通_BluetoothCast_v${{ inputs.version }}
+          path: 投音通_BluetoothCast_v${{ inputs.version }}.zip
+
+      - name: 创建 Release 并上传
+        if: ${{ inputs.create_release }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: 投音通 BluetoothCast v${{ inputs.version }}
+          prerelease: ${{ inputs.prerelease }}
+          files: 投音通_BluetoothCast_v${{ inputs.version }}.zip
