@@ -1,7 +1,6 @@
 # 投音通 BluetoothCast
 
-把 Windows 电脑变成一台蓝牙音箱：手机 / 平板 / 手表通过蓝牙连接到电脑，媒体声音从电脑扬声器播放。
-
+连接手机蓝牙后可以把手机音频转到电脑播放
 基于 WinUI 3（Fluent UI）与 Windows App SDK 1.8，unpackaged 自包含部署，无需安装运行时。
 
 ---
